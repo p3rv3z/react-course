@@ -1,25 +1,30 @@
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { decrementCounter, incrementCounter, resetCounter, setCounter } from "../store/actions/testAction";
+import { decrement, fetchPosts, increment, reset, set } from "../store/reducers/testSlice";
 
 const TestComponent = ({ name }) => {
+
+  useEffect(() => {
+    dispatch(fetchPosts())
+  }, [])
 
   const test = useSelector(state => state.test);
   const dispatch = useDispatch();
 
   const handleIncrement = () => {
-    dispatch(incrementCounter())
+    dispatch(increment())
   }
 
   const handleDecrement = () => {
-    dispatch(decrementCounter())
+    dispatch(decrement())
   }
 
   const handleReset = () => {
-    dispatch(resetCounter())
+    dispatch(reset())
   }
 
   const handleSet = (e) => {
-    dispatch(setCounter(e.target.value))
+    dispatch(set(e.target.value))
   }
 
   return (
@@ -30,6 +35,9 @@ const TestComponent = ({ name }) => {
       <button onClick={handleDecrement}>Decrement</button>
       <div>
         <input type="number" value={test.counter} onChange={handleSet} />
+      </div>
+      <div>
+        {test.loading}
       </div>
       <button onClick={handleReset}>Reset</button>
     </div>
