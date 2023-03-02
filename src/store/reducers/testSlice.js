@@ -3,15 +3,14 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 const initialState = {
   counter: 0,
   posts: [],
-  loading: "idle",
+  loading: 'idle'
 };
 
-export const fetchPosts = createAsyncThunk("test/fetchPosts", async () => {
-  const post = await fetch("https://jsonplaceholder.typicode.com/posts").then(
-    (res) => res.json()
-  );
-  return post;
-});
+export const fetchPosts = createAsyncThunk('test/fetchPosts', async() => {
+    throw Error('Data not found')
+    // return await fetch('https://jsonplaceholder.typicode.com/posts')
+    //     .then((response) => response.json())
+})
 
 const testSlice = createSlice({
   name: "test",
@@ -31,17 +30,17 @@ const testSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchPosts.fulfilled, (state, action) => {
-      state.posts.push(action.payload);
-      state.loading = "idle";
-    });
-    builder.addCase(fetchPosts.pending, (state, action) => {
-      state.loading = "pending";
-    });
-    builder.addCase(fetchPosts.rejected, (state, action) => {
-      state.loading = "rejected";
-    });
-  },
+    builder.addCase(fetchPosts.pending, (state) => {
+        state.loading = 'pending'
+    })
+    builder.addCase(fetchPosts.fulfilled, (state, {payload}) => {
+        state.posts = payload
+        state.loading = 'idle'
+    })
+    builder.addCase(fetchPosts.rejected, (state) => {
+        state.loading = 'failed'
+    })
+  }
 });
 
 export const { increment, decrement, set, reset } = testSlice.actions;
